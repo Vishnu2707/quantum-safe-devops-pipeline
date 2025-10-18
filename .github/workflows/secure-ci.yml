@@ -1,0 +1,126 @@
+name: Secure CI (PQC)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  sign-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake git pkg-config libssl-dev docker.io curl
+
+      - name: Build liboqs
+        run: |
+          git clone https://github.com/open-quantum-safe/liboqs.git
+          cd liboqs && mkdir build && cd build
+          cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DOQS_USE_OPENSSL=OFF ..
+          make -j2 && sudo make install
+
+      - name: Build oqs-provider
+        run: |
+          git clone https://github.com/open-quantum-safe/oqs-provider.git
+          cd oqs-provider && mkdir build && cd build
+          cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+          make -j2 && sudo make install
+
+      - name: Prepare OpenSSL config
+        run: |
+          mkdir -p configs
+          cat > configs/openssl-oqs.cnf <<'EOF'
+          openssl_conf = openssl_init
+          [openssl_init]
+          providers = provider_sect
+          [provider_sect]
+          default = default_sect
+          oqsprovider = oqsprovider_sect
+          [default_sect]
+          activate = 1
+          [oqsprovider_sect]
+          activate = 1
+          EOF
+          echo "OPENSSL_CONF=$GITHUB_WORKSPACE/configs/openssl-oqs.cnf" >> $GITHUB_ENV
+
+      - name: Generate Falcon key + cert
+        run: |
+          openssl genpkey -algorithm falcon512 -out keys.pem
+          openssl req -x509 -new -key keys.pem -subj "/CN=ci" -days 7 -out cert.pem
+
+      - name: Create and sign artifact
+        run: |
+          echo "Hello PQC CI $(date)" > artifact.txt
+          openssl dgst -sha256 -binary artifact.txt > artifact.txt.sha256.bin
+          openssl pkeyutl -sign -inkey keys.pem -in artifact.txt.sha256.bin -out artifact.txt.sig
+
+      - name: Verify signature
+        run: |
+          openssl x509 -in cert.pem -pubkey -noout > pub.pem
+          openssl pkeyutl -verify -pubin -inkey pub.pem -in artifact.txt.sha256.bin -sigfile artifact.txt.sig
+
+  docker-image-sign:
+    runs-on: ubuntu-latest
+    needs: sign-artifact
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake git pkg-config libssl-dev docker.io
+
+      - name: Build liboqs + oqs-provider
+        run: |
+          git clone https://github.com/open-quantum-safe/liboqs.git
+          cd liboqs && mkdir build && cd build
+          cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DOQS_USE_OPENSSL=OFF ..
+          make -j2 && sudo make install
+          cd ../..
+          git clone https://github.com/open-quantum-safe/oqs-provider.git
+          cd oqs-provider && mkdir build && cd build
+          cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+          make -j2 && sudo make install
+
+      - name: Prepare OpenSSL config
+        run: |
+          mkdir -p configs
+          cat > configs/openssl-oqs.cnf <<'EOF'
+          openssl_conf = openssl_init
+          [openssl_init]
+          providers = provider_sect
+          [provider_sect]
+          default = default_sect
+          oqsprovider = oqsprovider_sect
+          [default_sect]
+          activate = 1
+          [oqsprovider_sect]
+          activate = 1
+          EOF
+          echo "OPENSSL_CONF=$GITHUB_WORKSPACE/configs/openssl-oqs.cnf" >> $GITHUB_ENV
+
+      - name: Generate Falcon key + cert
+        run: |
+          openssl genpkey -algorithm falcon512 -out keys.pem
+          openssl req -x509 -new -key keys.pem -subj "/CN=ci-image" -days 7 -out cert.pem
+
+      - name: Build demo image, hash tar, sign
+        run: |
+          cat > Dockerfile.pqc <<'DF'
+          FROM busybox:latest
+          RUN echo "hello from pqc docker ci" > /hello.txt
+          CMD ["cat","/hello.txt"]
+          DF
+          docker build -t pqc-ci:latest -f Dockerfile.pqc .
+          docker save pqc-ci:latest | openssl dgst -sha256 -binary > image.tar.sha256.bin
+          openssl pkeyutl -sign -inkey keys.pem -in image.tar.sha256.bin -out image.tar.sig
+
+      - name: Verify image signature
+        run: |
+          openssl x509 -in cert.pem -pubkey -noout > pub.pem
+          docker save pqc-ci:latest | openssl dgst -sha256 -binary > image.tar.sha256.bin
+          openssl pkeyutl -verify -pubin -inkey pub.pem -in image.tar.sha256.bin -sigfile image.tar.sig

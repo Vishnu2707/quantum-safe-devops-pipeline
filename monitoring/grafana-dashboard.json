@@ -1,0 +1,32 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU (node)",
+      "targets": [
+        {
+          "expr": "avg(rate(process_cpu_seconds_total[1m]))"
+        }
+      ],
+      "id": 1
+    },
+    {
+      "type": "graph",
+      "title": "Build Duration (seconds)",
+      "targets": [
+        {
+          "expr": "build_duration_seconds"
+        }
+      ],
+      "id": 2
+    }
+  ],
+  "schemaVersion": 36,
+  "version": 1,
+  "title": "PQC DevOps Overview"
+}
