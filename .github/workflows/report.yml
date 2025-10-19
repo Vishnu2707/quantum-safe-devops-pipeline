@@ -1,0 +1,35 @@
+name: Quantum-Safe Performance Report
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r monitoring/reports/requirements.txt
+
+      - name: Run report generator
+        run: |
+          python monitoring/reports/report_generator.py
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantum-performance-report
+          path: monitoring/reports/quantum_performance_report.md
