@@ -1,0 +1,172 @@
+{
+  "id": null,
+  "title": "Quantum Health Intelligence Dashboard",
+  "tags": ["pqc", "falcon", "rsa", "monitoring"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "text",
+      "title": "Quantum System Alerts",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 2 },
+      "options": {
+        "content": "<div style='background-color:#4B0000;color:#fff;text-align:center;font-size:22px;padding:10px;'>🚨 Quantum Health Monitor Active — Live Post-Quantum Metrics 🚨</div>",
+        "mode": "html"
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Handshake Trend: Falcon PQC vs RSA",
+      "gridPos": { "x": 0, "y": 2, "w": 24, "h": 7 },
+      "targets": [
+        { "expr": "pqc_ssh_falcon_handshake_seconds", "legendFormat": "Falcon PQC", "refId": "A" },
+        { "expr": "pqc_ssh_rsa_handshake_seconds", "legendFormat": "RSA Classic", "refId": "B" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        }
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom" }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Falcon/RSA Latency Ratio",
+      "gridPos": { "x": 0, "y": 9, "w": 6, "h": 5 },
+      "targets": [
+        { "expr": "pqc_ssh_falcon_handshake_seconds / pqc_ssh_rsa_handshake_seconds", "refId": "A" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ratio",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1.5 },
+              { "color": "red", "value": 2.5 }
+            ]
+          }
+        }
+      },
+      "options": {
+        "orientation": "auto",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "area"
+      }
+    },
+    {
+      "type": "gauge",
+      "title": "CPU Usage (%)",
+      "gridPos": { "x": 6, "y": 9, "w": 6, "h": 5 },
+      "targets": [
+        { "expr": "pqc_cpu_usage_percent", "refId": "A" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "max": 100,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 70 },
+              { "color": "red", "value": 85 }
+            ]
+          }
+        }
+      },
+      "options": { "showThresholdLabels": false, "showThresholdMarkers": true }
+    },
+    {
+      "type": "stat",
+      "title": "System Health (%)",
+      "gridPos": { "x": 12, "y": 9, "w": 6, "h": 5 },
+      "targets": [
+        {
+          "expr": "(100 - pqc_cpu_usage_percent) * (pqc_ssh_rsa_handshake_seconds / pqc_ssh_falcon_handshake_seconds)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 40 },
+              { "color": "green", "value": 70 }
+            ]
+          }
+        }
+      },
+      "options": { "colorMode": "background", "textMode": "value" }
+    },
+    {
+      "type": "stat",
+      "title": "Avg Falcon Handshake (s)",
+      "gridPos": { "x": 18, "y": 9, "w": 6, "h": 5 },
+      "targets": [
+        { "expr": "avg_over_time(pqc_ssh_falcon_handshake_seconds[2m])", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "options": { "colorMode": "none", "textMode": "value" }
+    },
+    {
+      "type": "stat",
+      "title": "Avg RSA Handshake (s)",
+      "gridPos": { "x": 0, "y": 14, "w": 6, "h": 5 },
+      "targets": [
+        { "expr": "avg_over_time(pqc_ssh_rsa_handshake_seconds[2m])", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "options": { "colorMode": "none", "textMode": "value" }
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency Distribution (Falcon PQC)",
+      "gridPos": { "x": 6, "y": 14, "w": 18, "h": 6 },
+      "targets": [
+        { "expr": "pqc_ssh_falcon_handshake_seconds", "legendFormat": "Falcon PQC" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "continuous-YlRd" }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "PQC Efficiency (%)",
+      "gridPos": { "x": 0, "y": 20, "w": 6, "h": 5 },
+      "targets": [
+        { "expr": "(pqc_ssh_rsa_handshake_seconds / pqc_ssh_falcon_handshake_seconds) * 100", "refId": "A" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 50 },
+              { "color": "green", "value": 70 }
+            ]
+          }
+        }
+      },
+      "options": { "colorMode": "value" }
+    }
+  ],
+  "time": { "from": "now-6h", "to": "now" },
+  "editable": true
+}

@@ -1,0 +1,29 @@
+groups:
+  - name: pqc-alerts
+    rules:
+      - alert: HighFalconHandshakeTime
+        expr: pqc_ssh_falcon_handshake_seconds > 3
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Falcon handshake latency high"
+          description: "Falcon handshake > 3s for {{ $labels.instance }}"
+
+      - alert: HighCPUUsage
+        expr: pqc_cpu_usage_percent > 85
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CPU usage critical"
+          description: "CPU >85% for {{ $labels.instance }}"
+
+      - alert: LowSystemHealth
+        expr: ((100 - pqc_cpu_usage_percent) * (pqc_ssh_rsa_handshake_seconds / pqc_ssh_falcon_handshake_seconds)) < 30
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "System health low"
+          description: "Quantum performance degrading on {{ $labels.instance }}"
