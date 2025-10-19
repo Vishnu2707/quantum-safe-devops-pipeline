@@ -162,7 +162,7 @@ pandoc monitoring/reports/quantum_performance_report.md -o docs/performance_summ
 ```
 
 Example Report:
-![Performance Report](docs/performance_report.png)
+![Performance Report](docs/performance_report.pdf)
 
 ---
 
