@@ -211,30 +211,7 @@ It also offers reproducible metrics and dashboards, helping bridge the gap betwe
 ## Author
 
 **Vishnu Ajith**
-Linux & Cloud Infrastructure Engineer | Lecturer in Cloud Computing | Researcher in Quantum-Safe Systems
-London, United Kingdom
+Researcher in Quantum-Safe Systems | Linux & Cloud Infrastructure Engineer | Lecturer in Software Engineering & Cloud Computing | London, United Kingdom
 GitHub: [Vishnu2707](https://github.com/Vishnu2707)
 
-```
-
----
-
-### 📁 Folder Setup for Images
-In your repository root, create a folder named `docs/` and place these image files (exported from your screenshots doc):
-
-```
-
-docs/
-├── pqc_devops_diagram.png
-├── dashboard_main.png
-├── dashboard_comparative.png
-└── performance_report.png
-
-```
-
-Once those are added, all diagrams and dashboard visuals will appear automatically in your README.
-
----
-
-Would you like me to now create a **professional architecture diagram (pqc_devops_diagram.png)** to match your Grafana dashboard style — white background, labeled arrows, and ready for upload to `/docs/`?
 ```
