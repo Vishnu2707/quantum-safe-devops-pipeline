@@ -71,6 +71,8 @@ jobs:
 
   docker-image-sign:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
     needs: sign-artifact
     steps:
       - uses: actions/checkout@v4
