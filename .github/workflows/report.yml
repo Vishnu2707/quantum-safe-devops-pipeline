@@ -22,7 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r monitoring/reports/requirements.txt
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip install requests markdown
 
       - name: Run report generator
         run: |
