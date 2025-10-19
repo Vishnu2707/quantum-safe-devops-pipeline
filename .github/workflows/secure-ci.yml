@@ -74,7 +74,10 @@ jobs:
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           sudo apt-get update --fix-missing
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \ build-essential cmake git curl pkg-config libssl-dev
+          sudo apt-get remove -y containerd.io containerd || true
+          sudo apt-mark hold containerd docker-ce docker-ce-cli || true
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \  
+          build-essential cmake git curl pkg-config libssl-dev
 
       - name: Build liboqs + oqs-provider
         run: |
