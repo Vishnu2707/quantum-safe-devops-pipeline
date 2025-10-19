@@ -1,4 +1,5 @@
-#Quantum-Safe DevOps Pipeline
+```markdown
+# Quantum-Safe DevOps Pipeline
 
 ## Overview
 This repository demonstrates how secure DevOps environments can be prepared for the post-quantum era using open-source tools and reproducible workflows.  
@@ -21,7 +22,6 @@ To design and validate a **quantum-resistant DevOps workflow** that:
 ## 2. System Architecture
 
 ### High-Level Workflow
-
 ```
 
 Developer Commit ──► GitHub Actions (PQC Signing)
@@ -61,7 +61,6 @@ The architecture shows how PQC algorithms are applied throughout the pipeline �
 ---
 
 ## 4. Key Features
-
 - Post-Quantum Secure Signing (Falcon512, Dilithium)
 - Quantum-Safe SSH Communication via Dockerized OQS-OpenSSH
 - Real-Time Performance Monitoring (Prometheus + Grafana)
@@ -72,13 +71,12 @@ The architecture shows how PQC algorithms are applied throughout the pipeline �
 ---
 
 ## 5. Monitoring Stack
-
 The monitoring system visualizes live data from the PQC pipeline using Prometheus and Grafana.
 
 **Metrics Monitored:**
-- RSA and Falcon handshake latency
-- CPU usage percentage
-- Efficiency and latency ratio (RSA/Falcon)
+- RSA and Falcon handshake latency  
+- CPU usage percentage  
+- Efficiency and latency ratio (RSA/Falcon)  
 - PQC throughput (operations per second)
 
 **Grafana Dashboards:**
@@ -137,10 +135,10 @@ Access:
 * Prometheus: [http://localhost:9090](http://localhost:9090)
 * Grafana: [http://localhost:3000](http://localhost:3000)
 
-Credentials:
+Default Credentials:
 
 ```
-User: admin
+Username: admin
 Password: admin
 ```
 
@@ -177,7 +175,7 @@ Example Report:
 | ----------: | :-----: | :--------: | :---: | :-----: |
 | Avg (5 min) |   1.49  |    2.50    | 0.60× |   48.5  |
 
-The data indicates that Falcon512 introduces slightly higher latency than RSA but remains within acceptable operational ranges for DevOps automation — confirming that post-quantum security can be integrated without sacrificing performance.
+Falcon512 demonstrates slightly higher latency compared to RSA but remains within acceptable performance limits for CI/CD and infrastructure automation, proving that post-quantum algorithms can be practically integrated into production pipelines.
 
 ---
 
@@ -198,10 +196,9 @@ quantum-safe-devops-pipeline/
 
 ## 11. Research Insight
 
-This project demonstrates that **quantum-safe cryptography is not limited to theoretical studies** — it can be embedded directly into operational DevOps systems today.
-Through reproducible automation, containerized testing, and real-time metrics, the project proves that PQC algorithms like **Falcon512** can coexist with existing tools such as Docker, OpenSSL, and GitHub Actions.
-
-This provides a practical framework for organizations preparing their infrastructure for **post-quantum transition**.
+This project demonstrates that **quantum-safe cryptography can be embedded directly into operational DevOps systems today**.
+By combining containerization, automated workflows, and observability, the project provides a realistic path for organizations to adopt post-quantum security within CI/CD environments.
+It also offers reproducible metrics and dashboards, helping bridge the gap between **academic PQC research** and **practical system deployment**.
 
 ---
 
@@ -225,10 +222,22 @@ GitHub: [Vishnu2707](https://github.com/Vishnu2707)
 
 ---
 
-### 🧩 Additional Notes
+### 📁 Folder Setup for Images
+In your repository root, create a folder named `docs/` and place these image files (exported from your screenshots doc):
 
-- Replace image links (`docs/dashboard_main.png`, `docs/pqc_devops_diagram.png`) with your actual screenshots from the `Screenshots.docx` — just export them as `.png` and place them under a new `docs/` folder.
-- I can generate the **architecture diagram image** (`pqc_devops_diagram.png`) for you next — a clear visual of your workflow with labeled arrows and color-coded nodes (PQC, monitoring, CI/CD).
+```
 
-Would you like me to create that final architecture diagram now (clean white background, blue-gray nodes, publication-ready)?
+docs/
+├── pqc_devops_diagram.png
+├── dashboard_main.png
+├── dashboard_comparative.png
+└── performance_report.png
+
+```
+
+Once those are added, all diagrams and dashboard visuals will appear automatically in your README.
+
+---
+
+Would you like me to now create a **professional architecture diagram (pqc_devops_diagram.png)** to match your Grafana dashboard style — white background, labeled arrows, and ready for upload to `/docs/`?
 ```
