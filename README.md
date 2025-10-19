@@ -103,7 +103,7 @@ The monitoring system visualizes live data from the PQC pipeline using Prometheu
    bash scripts/pqc_generate_keys.sh
    bash scripts/sign_artifact.sh ./README.md
    bash scripts/verify_artifact.sh ./README.md ./signatures/README.md.sig ./keys/pqc_cert.pem
-````
+```
 
 3. (Optional) Build and test PQC SSH:
 
@@ -117,8 +117,6 @@ The monitoring system visualizes live data from the PQC pipeline using Prometheu
 ```bash
 bash scripts/setup_macos.sh
 ```
-
----
 
 ## 7. Monitoring Setup
 
