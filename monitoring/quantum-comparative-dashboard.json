@@ -1,0 +1,107 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "id": null,
+  "liveNow": false,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Falcon vs RSA Latency Trend (5-min avg)",
+      "targets": [
+        { "expr": "avg_over_time(pqc_ssh_falcon_handshake_seconds[5m])", "legendFormat": "Falcon" },
+        { "expr": "avg_over_time(pqc_ssh_rsa_handshake_seconds[5m])", "legendFormat": "RSA" }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 }
+    },
+    {
+      "type": "stat",
+      "title": "Δ Latency (Falcon – RSA)",
+      "targets": [ { "expr": "pqc_ssh_falcon_handshake_seconds - pqc_ssh_rsa_handshake_seconds" } ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 2 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 0, "y": 8, "w": 8, "h": 6 }
+    },
+    {
+      "type": "gauge",
+      "title": "Efficiency (%)",
+      "targets": [ { "expr": "(pqc_ssh_rsa_handshake_seconds / pqc_ssh_falcon_handshake_seconds) * 100" } ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0, "max": 150, "unit": "percent",
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 70 },
+              { "color": "green", "value": 90 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 8, "y": 8, "w": 8, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "CPU × Falcon Correlation",
+      "targets": [ { "expr": "pqc_ssh_falcon_handshake_seconds * pqc_cpu_usage_percent", "legendFormat": "Correlation" } ],
+      "fieldConfig": { "defaults": { "unit": "none" } },
+      "gridPos": { "x": 16, "y": 8, "w": 8, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU vs Falcon Correlation Trend",
+      "targets": [ { "expr": "pqc_ssh_falcon_handshake_seconds * pqc_cpu_usage_percent", "legendFormat": "Correlation Trend" } ],
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "RSA vs Falcon Handshake Distribution",
+      "targets": [
+        { "expr": "pqc_ssh_falcon_handshake_seconds", "legendFormat": "Falcon PQC" },
+        { "expr": "pqc_ssh_rsa_handshake_seconds", "legendFormat": "RSA Classic" }
+      ],
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU Usage Trend (%)",
+      "targets": [ { "expr": "pqc_cpu_usage_percent", "legendFormat": "CPU Usage" } ],
+      "gridPos": { "x": 0, "y": 22, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Falcon vs RSA Ratio Trend",
+      "targets": [ { "expr": "pqc_ssh_falcon_handshake_seconds / pqc_ssh_rsa_handshake_seconds", "legendFormat": "Latency Ratio" } ],
+      "gridPos": { "x": 12, "y": 22, "w": 12, "h": 8 }
+    },
+    {
+      "type": "bargauge",
+      "title": "Performance Comparison Snapshot",
+      "targets": [
+        { "expr": "pqc_ssh_rsa_handshake_seconds", "legendFormat": "RSA" },
+        { "expr": "pqc_ssh_falcon_handshake_seconds", "legendFormat": "Falcon" }
+      ],
+      "options": { "displayMode": "lcd", "orientation": "horizontal" },
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 6 }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["quantum", "pqc", "analytics"],
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "Quantum Comparative Performance Dashboard",
+  "version": 3
+}
